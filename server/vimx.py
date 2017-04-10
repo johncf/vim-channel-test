@@ -10,7 +10,7 @@ class VimX:
         self.buffer = [] # buffer for 'positive' objects
         self.logger = logging.getLogger(__name__)
 
-    def wait(self, expect=0):
+    def recv(self, expect=0):
         """ Blocking function. Use with care!
             `expect` should either be 0 or a negative number. If `expect == 0`, any positive
             indexed object is returned. Otherwise, it will queue any positive objects until the
@@ -49,7 +49,7 @@ class VimX:
             self.counter -= 1
         self.write(obj)
         if reply:
-            re = self.wait(expect=self.counter)
+            re = self.recv(expect=self.counter)
             return re
 
     def eval(self, expr, reply=True):
@@ -59,7 +59,7 @@ class VimX:
             self.counter -= 1
         self.write(obj)
         if reply:
-            re = self.wait(expect=self.counter)
+            re = self.recv(expect=self.counter)
             return re
 
     def command(self, cmd):
@@ -77,18 +77,6 @@ class VimX:
         bufnr = self.call('bufnr', name, 1)
         self.call('setbufvar', bufnr, '&bl', 1, reply=False)
         return bufnr
-
-    def sign_place(self, sign_id, name, bufnr, line):
-        """ Place a sign at the specified location. """
-        self.command("sign place {} name={} line={} buffer={}".format(sign_id, name, line, bufnr))
-
-    def sign_unplace(self, sign_id):
-        """ Hide a sign with specified id. """
-        self.command("sign unplace {}".format(sign_id))
-
-    def get_buffer_name(self, nr):
-        """ Get the buffer name given its number. """
-        return self.call('bufname', nr)
 
     def abspath(self, relpath):
         vim_cwd = self.call("getcwd")

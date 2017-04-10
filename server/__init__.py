@@ -31,7 +31,7 @@ class Middleman():
                     elif req[0] == 'exit':
                         break
                 elif ev == self.vimx.ch_in:
-                    vi = self.vimx.wait()
+                    vi = self.vimx.recv()
                     self.logger.info("got: %s", vi)
             self.vimx.send('hello {}'.format(x))
             x += 1
